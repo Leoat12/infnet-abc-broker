@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "abc-broker-ui"
+    }
+  },
+  "defaultProject": "abc-broker-ui",
+  "cli": {
+    "analytics": "1aa0d6ea-b632-479a-9f6d-94cfa7286d5c"
+  }
 }
