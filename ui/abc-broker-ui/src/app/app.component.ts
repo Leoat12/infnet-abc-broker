@@ -19,34 +19,31 @@ export class AppComponent implements OnInit {
 
     this.api.getStockInfo().subscribe(stocks => {
       this.data = stocks;
-      // test
-      // console.log(this.data);
-    });
+      let dataPoints = [];
+      let y = 0;
+      for (let stock of this.data) {
+        let date = stock.date.toString();
+        dataPoints.push({y: stock.close, label: date});
+      }
+      let chart = new CanvasJS.Chart("chartContainer", {
+        zoomEnabled: true,
+        animationEnabled: true,
+        exportEnabled: true,
+        title: {
+          text: "Variação da Ação"
+        },
+        subtitles: [{
+          text: "Tente dar zoom e e scroll vertical"
+        }],
+        data: [
+          {
+            type: "line",
+            dataPoints: dataPoints
+          }]
+      });
 
-    let dataPoints = [];
-    let y = 0;
-    for (var i = 0; i < 10000; i++) {
-      y += Math.round(5 + Math.random() * (-5 - 5));
-      dataPoints.push({y: y});
-    }
-    let chart = new CanvasJS.Chart("chartContainer", {
-      zoomEnabled: true,
-      animationEnabled: true,
-      exportEnabled: true,
-      title: {
-        text: "Performance Demo - 10000 DataPoints"
-      },
-      subtitles: [{
-        text: "Try Zooming and Panning"
-      }],
-      data: [
-        {
-          type: "line",
-          dataPoints: dataPoints
-        }]
+      chart.render();
     });
-
-    chart.render();
   }
 
 }
