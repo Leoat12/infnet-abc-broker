@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @Data
 @Builder
@@ -16,5 +17,7 @@ public class StockInfo {
     private Double close;
     private Double adjClose;
     private Double volume;
+    private Map<Integer, Double> sma;
+    private Map<Integer, Double> ema;
 
 }

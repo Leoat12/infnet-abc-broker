@@ -6,4 +6,6 @@ export interface Stock {
   close: number;
   adjClose: number;
   volume: number;
+  sma: { [period: number]: number };
+  ema: { [period: number]: number };
 }

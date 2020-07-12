@@ -1,1 +1,11 @@
+<span class="m-2">Período do EMA: </span>
+<button class="btn m-2" [ngClass]="currentPeriod === 9 ? 'btn-danger' : 'btn-primary'" type="button"
+        (click)="changeEmaPeriod(9)">9 dias
+</button>
+<button class="btn m-2" [ngClass]="currentPeriod === 12 ? 'btn-danger' : 'btn-primary'" type="button"
+        (click)="changeEmaPeriod(12)">12 dias
+</button>
+<button class="btn m-2" [ngClass]="currentPeriod === 26 ? 'btn-danger' : 'btn-primary'" type="button"
+        (click)="changeEmaPeriod(26)">26 dias
+</button>
 <div id="chartContainer" style="height: 370px; width: 100%; margin-left:auto;margin-right:auto;"></div>
