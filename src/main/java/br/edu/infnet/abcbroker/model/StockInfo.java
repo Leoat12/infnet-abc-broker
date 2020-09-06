@@ -19,5 +19,6 @@ public class StockInfo {
     private Double volume;
     private Map<Integer, Double> sma;
     private Map<Integer, Double> ema;
+    private MACD macd;
 
 }

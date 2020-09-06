@@ -1,5 +1,6 @@
 package br.edu.infnet.abcbroker.service;
 
+import br.edu.infnet.abcbroker.model.MACD;
 import br.edu.infnet.abcbroker.model.StockInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -50,6 +51,7 @@ public class StockInfoService {
             calculateEMA(stockInfos, 9);
             calculateEMA(stockInfos, 12);
             calculateEMA(stockInfos, 26);
+            calculateMACD(stockInfos);
 
             return stockInfos;
         } catch (IOException e) {
@@ -82,8 +84,8 @@ public class StockInfoService {
      * <p>
      * EMA: {Close - EMA(previous day)} x multiplier + EMA(previous day).
      *
-     * @param stockInfos
-     * @param period
+     * @param stockInfos Information of the stock
+     * @param period     The period desires for the EMA
      */
     private void calculateEMA(List<StockInfo> stockInfos, int period) {
         calculateSMA(stockInfos, period);
@@ -107,6 +109,44 @@ public class StockInfoService {
             endStock.getEma().put(period, ema);
             previousEma = ema;
             end++;
+        }
+    }
+
+    private void calculateMACD(List<StockInfo> stockInfos) {
+
+        for (StockInfo si : stockInfos) {
+            if (Objects.nonNull(si.getEma()) && si.getEma().containsKey(12) && si.getEma().containsKey(26)) {
+                MACD macd = new MACD();
+                macd.setDate(si.getDate());
+                macd.setMacd(si.getEma().get(12) - si.getEma().get(26));
+                si.setMacd(macd);
+            }
+        }
+
+        calculateSignalLine(stockInfos);
+
+        for (StockInfo si : stockInfos) {
+            if (Objects.nonNull(si.getMacd()) && Objects.nonNull(si.getMacd().getMacd()) && Objects.nonNull(si.getMacd().getSignal())) {
+                si.getMacd().setHistogram(si.getMacd().getMacd() - si.getMacd().getSignal());
+            }
+        }
+
+    }
+
+    private void calculateSignalLine(List<StockInfo> stockInfos) {
+        List<StockInfo> macdLine = stockInfos.stream()
+                .filter(stockInfo -> Objects.nonNull(stockInfo.getMacd()))
+                .map(si ->
+                        StockInfo.builder().date(si.getMacd().getDate()).close(si.getMacd().getMacd()).build()
+                ).collect(Collectors.toList());
+
+        calculateEMA(macdLine, 9);
+
+        for (StockInfo stockInfo : stockInfos) {
+            macdLine.stream().filter(m -> m.getDate().isEqual(stockInfo.getDate()) && Objects.nonNull(m.getEma()))
+                    .findFirst().ifPresent(m ->
+                    stockInfo.getMacd().setSignal(m.getEma().get(9))
+            );
         }
     }
 }
