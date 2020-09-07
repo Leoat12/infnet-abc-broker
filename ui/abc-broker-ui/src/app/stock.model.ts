@@ -1,9 +1,10 @@
-
 interface Macd {
-  date : Date;
-  macd : number;
-  histogram : number;
+  date: Date;
+  macd: number;
+  histogram: number;
+  signal: number
 }
+
 export interface Stock {
   date: Date;
   open: number;
@@ -14,5 +15,5 @@ export interface Stock {
   volume: number;
   sma: { [period: number]: number };
   ema: { [period: number]: number };
-  macd : Macd;
+  macd: Macd;
 }

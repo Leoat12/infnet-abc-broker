@@ -51,11 +51,15 @@ export class AppComponent implements OnInit {
       data: [
         {
           type: "line",
-          dataPoints: stockClose
+          dataPoints: stockClose,
+          showInLegend: true,
+          legendText: 'Valor da Ação'
         },
         {
           type: "line",
-          dataPoints: ema
+          dataPoints: ema,
+          showInLegend: true,
+          legendText: 'EMA'
         }
       ]
     });
@@ -64,18 +68,23 @@ export class AppComponent implements OnInit {
     this.renderChart2();
   }
 
-  renderChart2(){
+  renderChart2() {
 
     let macdLine = [];
     let histogram = [];
+    let signalLine = [];
 
-    for(let stock of this.data){
-      if(stock?.macd?.macd){
+    for (let stock of this.data) {
+      if (stock?.macd?.macd) {
         macdLine.push({y: stock.macd.macd, label: stock.macd.date})
       }
 
-      if(stock?.macd?.histogram){
+      if (stock?.macd?.histogram) {
         histogram.push({y: stock.macd.histogram, label: stock.macd.date});
+      }
+
+      if (stock?.macd?.signal) {
+        signalLine.push({y: stock.macd.signal, label: stock.macd.date});
       }
     }
 
@@ -92,12 +101,20 @@ export class AppComponent implements OnInit {
       data: [
         {
           type: "line",
-          dataPoints: macdLine
-        } ,
+          dataPoints: macdLine,
+          showInLegend: true,
+          legendText: "Linha MACD"
+        },
+        {
+          type: "line",
+          dataPoints: signalLine,
+          showInLegend: true,
+          legendText: "Linha de Sinal"
+        },
         {
           type: "column",
-          dataPoints: histogram
-        } 
+          dataPoints: histogram,
+        }
       ]
     });
 
