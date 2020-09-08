@@ -2,14 +2,15 @@ package br.edu.infnet.abcbroker.service;
 
 import br.edu.infnet.abcbroker.model.MACD;
 import br.edu.infnet.abcbroker.model.StockInfo;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,15 +19,19 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class StockInfoService {
 
-    @Value("classpath:MGLU3.SA.csv")
-    private Resource stockInfoResource;
+    private final ResourceLoader resourceLoader;
 
     public List<StockInfo> getStockInfoFromFile() {
         try {
-            File stockInfoFile = stockInfoResource.getFile();
-            List<String> lines = Files.readAllLines(stockInfoFile.toPath(), StandardCharsets.UTF_8);
+            Resource stockInfoResource = resourceLoader.getResource("classpath:MGLU3.SA.csv");
+            List<String> lines = new BufferedReader(
+                    new InputStreamReader(stockInfoResource.getInputStream(), StandardCharsets.UTF_8)
+            )
+                    .lines().collect(Collectors.toList());
+
             lines.remove(0);
             List<StockInfo> stockInfos = lines.stream()
                     .map(s -> {
